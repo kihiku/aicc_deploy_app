@@ -14,6 +14,8 @@ app.get('/', (request, response) => {
     response.send('This is the Main App for Deployment')
 })
 
+app.use(require('./routes/getRoutes'))
+
 
 // 4.listen 설정
 app.listen(process.env.PORT, ()=> {
