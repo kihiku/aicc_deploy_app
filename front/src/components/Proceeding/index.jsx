@@ -1,11 +1,14 @@
-import React from 'react'
-import Navbar from '../Common/Navbar'
-import ItemPanel from '../Common/ItemPanel'
+import React from 'react';
+import Navbar from '../Common/Navbar';
+import ItemPanel from '../Common/ItemPanel';
 
 const index = () => {
   return (
-    <div className='page_section'><Navbar/><ItemPanel/></div>
-  )
-}
+    <div className="page_section">
+      <Navbar />
+      <ItemPanel pageTitle='Proceeding Items'/>
+    </div>
+  );
+};
 
-export default index
+export default index;
