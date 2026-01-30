@@ -1,12 +1,24 @@
-
+import Home from "./components/Home";
+import Completed from './components/Completed'
+import Important from "./components/Important";
+import Proceeding from './components/Proceeding'
 import './App.css'
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Navbar from "./components/Common/Navbar";
 
 const App = () => {
 
   return (
-    <>
-      <h2 className="text-3xl font-bold underline">Hello React!!</h2>
-    </>
+    <BrowserRouter>
+     <div>
+        <Routes>
+          <Route path='/' element={<Home/>}/>
+          <Route path='/completed' element={<Completed/>}/>
+          <Route path='/important' element={<Important/>}/>
+          <Route path='/proceeding' element={<Proceeding/>}/>
+        </Routes>
+     </div>
+    </BrowserRouter>
   )
 }
 
