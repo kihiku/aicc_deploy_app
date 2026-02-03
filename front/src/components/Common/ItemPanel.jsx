@@ -1,13 +1,44 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PageTitle from './PageTitle';
 import AddItem from './AddItem';
 import Modal from './Modal';
 import Item from './Item';
 import { fetchGetItem } from '../../redux/slices/apiSlice';
+import { SkeletonTheme } from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
+import LoadingSkeleton from './LoadingSkeleton';
+
+// 1. home 메뉴를 서택할 때:
+  // - all메뉴를 선택하면 첫번째 filter 조건이 true이므로 모든 task를 반환
+  // - 1번에서 반환된 모든 tasks를 대상으로 두번째 filter 조건을 적용
+  // - filterImportant가 undefined이면 조건이 true 이므로 모든 task를 반환
+
+
+  // 2. Completed 메뉴를 선택할 때:
+  // - 첫번째 필터 조건에서 if문이 false이므로 return 문으로 이동하여 filterCompleted 조건을 판단
+  // - filterCompleted가 true이면 task.iscompleled가 true인 task만 반환
+
+
+  // 3. Proceeding 메뉴를 선택할 때:
+  // - 첫번째 필터 조건에서 if문이 false이므로 return 문으로 이동하여 filterCompleted 조건을 판단
+  // - filterCompleted가 false이면 task.iscompleled가 false인 task만 반환
+
+
+  // 4. Important 메뉴를 선택할 때:
+  // - 첫번째 필터 조건에서 if문이 true이므로 두번째 필터 조건으로 이동
+  // - 두번째 filter 조건에서 filterImportant가 없으면 true이므로 모든 task를 반환(home, Completed, Proceeding과 동일)
+  // - filterImportant가 true이면 task.isimportant가 true인 task만 반환
+
+  const  filteredTasks = getTasksData?.filter((task) => {
+    if (filteredCompleted === 'all') return true
+    return filteredCompleted ? task.iscompleted : !task.iscompleted
+  })
 
 const ItemPanel = ({ pageTitle }) => {
   const dispatch = useDispatch();
+
+  const [loading, setloading] = useState(false);
 
   // Auth Data
   const state = useSelector((state) => state.auth.authData);
@@ -26,9 +57,12 @@ const ItemPanel = ({ pageTitle }) => {
 
     const fetchGetItemsData = async () => {
       try {
+        setloading(true);
         await dispatch(fetchGetItem(userKey)).unwrap();
       } catch (error) {
         console.log('Fail to fetch Items: ', error);
+      } finally {
+        setloading(false);
       }
     };
     fetchGetItemsData();
@@ -41,9 +75,19 @@ const ItemPanel = ({ pageTitle }) => {
           {isOpen && <Modal />}
           <PageTitle title={pageTitle} />
           <div className="flex flex-wrap">
-            {getTasksData?.map((task, idx) => (
-              <Item key={idx} task={task} />
-            ))}
+            {loading ? (
+              <SkeletonTheme
+                baseColor="#202020"
+                highlightColor="#444"
+                height="25vh"
+              >
+                <LoadingSkeleton />
+                <LoadingSkeleton />
+                <LoadingSkeleton />
+              </SkeletonTheme>
+            ) : (
+              getTasksData?.map((task, idx) => <Item key={idx} task={task} />)
+            )}
 
             <AddItem />
           </div>
